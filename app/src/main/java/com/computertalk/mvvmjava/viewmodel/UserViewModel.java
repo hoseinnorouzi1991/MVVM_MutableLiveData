@@ -19,8 +19,7 @@ import java.util.ArrayList;
 
 public class UserViewModel extends BaseObservable {
 
-    private MutableLiveData<ArrayList<UserViewModel>> arrayListMutableLiveData = new MutableLiveData<>();
-    private ArrayList<UserViewModel> arrayListHolder = new ArrayList<>();
+    private ArrayList<UserViewModel> arrayList = new ArrayList<>();
     private String name;
     private String phone;
 
@@ -39,27 +38,16 @@ public class UserViewModel extends BaseObservable {
         for (int i = 0; i < 5; i++) {
             User user = new User("hosein" + i, "09398299779");
             UserViewModel userViewModel = new UserViewModel(user);
-            arrayListHolder.add(userViewModel);
+            arrayList.add(userViewModel);
         }
-        arrayListMutableLiveData.setValue(arrayListHolder);
     }
 
     @BindingAdapter("bind:recyclerUser")
-    public static void recyclerViewBinder(final RecyclerView recyclerView, MutableLiveData<ArrayList<UserViewModel>> arrayListMutableLiveData) {
-        arrayListMutableLiveData.observe((LifecycleOwner) recyclerView.getContext(), new Observer<ArrayList<UserViewModel>>() {
-            @Override
-            public void onChanged(ArrayList<UserViewModel> userViewModels) {
-                UserAdapter userAdapter = new UserAdapter(userViewModels);
+    public static void recyclerViewBinder(final RecyclerView recyclerView, ArrayList<UserViewModel> arrayList) {
+
+                UserAdapter userAdapter = new UserAdapter(arrayList);
                 recyclerView.setLayoutManager(new LinearLayoutManager(recyclerView.getContext(), LinearLayoutManager.VERTICAL,false));
                 recyclerView.setAdapter(userAdapter);
-            }
-        });
-
-
-    }
-
-    public MutableLiveData<ArrayList<UserViewModel>> getArrayListMutableLiveData() {
-        return arrayListMutableLiveData;
     }
 
     @Bindable
@@ -80,5 +68,15 @@ public class UserViewModel extends BaseObservable {
     public void setPhone(String phone) {
         this.phone = phone;
         notifyPropertyChanged(BR.phone);
+    }
+
+    @Bindable
+    public ArrayList<UserViewModel> getArrayList() {
+        return arrayList;
+    }
+
+    public void setArrayList(ArrayList<UserViewModel> arrayList) {
+        this.arrayList = arrayList;
+        notifyPropertyChanged(BR.arrayList);
     }
 }
