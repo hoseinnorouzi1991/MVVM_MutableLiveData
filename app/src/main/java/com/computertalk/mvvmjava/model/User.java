@@ -1,10 +1,24 @@
 package com.computertalk.mvvmjava.model;
 
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
 public class User {
+
+    @SerializedName("id")
+    @Expose
+    private String id;
+
+    @SerializedName("name")
+    @Expose
     private String name;
+
+    @SerializedName("phone")
+    @Expose
     private String phone;
 
-    public User(String name, String phone) {
+    public User(String id,String name, String phone) {
+        this.id = id;
         this.name = name;
         this.phone = phone;
     }

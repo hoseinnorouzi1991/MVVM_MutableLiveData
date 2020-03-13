@@ -8,11 +8,13 @@ import androidx.databinding.BindingAdapter;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModel;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.computertalk.mvvmjava.BR;
 import com.computertalk.mvvmjava.model.User;
+import com.computertalk.mvvmjava.remote.user.UsersRepository;
 import com.computertalk.mvvmjava.view.adapter.UserAdapter;
 
 import java.util.ArrayList;
@@ -35,11 +37,21 @@ public class UserViewModel extends BaseObservable {
         this.context = context;
 
         //connect to server API
-        for (int i = 0; i < 5; i++) {
-            User user = new User("hosein" + i, "09398299779");
-            UserViewModel userViewModel = new UserViewModel(user);
-            arrayList.add(userViewModel);
-        }
+
+        UsersRepository repository = new UsersRepository(context);
+        repository.getUsers();
+
+        repository.getMutableLiveData().observe((LifecycleOwner) context, new Observer<ArrayList<User>>() {
+            @Override
+            public void onChanged(ArrayList<User> users) {
+                for(int i =0; i<users.size(); i++)
+                {
+                    UserViewModel userViewModel = new UserViewModel(users.get(i));
+                    arrayList.add(userViewModel);
+                }
+                notifyPropertyChanged(BR.arrayList);
+            }
+        });
     }
 
     @BindingAdapter("bind:recyclerUser")
